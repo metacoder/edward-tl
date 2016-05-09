@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <name>Edward ThreadLocal</name>
-    <artifactId>edward-agent-test</artifactId>
+    <name>Edward ThreadLocal - Agent Test</name>
+    <artifactId>agent-test</artifactId>
 
 </project>
