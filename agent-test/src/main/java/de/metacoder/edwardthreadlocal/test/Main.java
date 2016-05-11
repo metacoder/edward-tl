@@ -21,6 +21,8 @@ public class Main {
         System.out.println("removing the thread local value");
         tl.remove();
         System.out.println("Removed =)");
+        tl.set("now this is bad");
+        System.out.println("Intentionally set another value, which should be registered as faulty");
       }
     } finally {
       afterBL();
