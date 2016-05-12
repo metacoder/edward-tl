@@ -1,13 +1,17 @@
 package de.metacoder.edwardthreadlocal
 
-/**
-  * Created by becker on 5/9/16.
-  */
+import de.metacoder.edwardthreadlocal.analysis.datamodel.CallData
+import de.metacoder.edwardthreadlocal.analysis.{AnalysisSetup, CallDataSink}
+
 class EventBridgeImpl extends EventBridge {
+  private implicit val setup:AnalysisSetup = AnalysisSetup.default
 
-  override def trackSet(affectedThreadLocal: ThreadLocal[_], valueToSet: scala.Any): Unit = println("I am the bridge impl trackSet")
-  override def activateTracingForThread(): Unit = println("I am the bridge impl activateTracingForThread")
-  override def deactivateTracingForThread(): Unit = println("I am the bridge impl deactivateTracingForThread")
-  override def trackRemove(affectedThreadLocal: ThreadLocal[_]): Unit = println("I am the bridge impl trackRemove")
-
+  override def activateTracingForThread() =
+    CallDataSink startRecordingSeries()
+  override def deactivateTracingForThread() =
+    CallDataSink endRecordingSeries()
+  override def trackRemove(affectedThreadLocal:ThreadLocal[_]) =
+    CallDataSink accept (CallData forCallToRemove affectedThreadLocal)
+  override def trackSet(affectedThreadLocal:ThreadLocal[_], valueToSet:Any) =
+    CallDataSink accept (CallData forCallToSet (affectedThreadLocal, valueToSet.asInstanceOf[AnyRef]))
 }
