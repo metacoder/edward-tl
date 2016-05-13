@@ -9,17 +9,17 @@ object FaultyCallDataSeriesSink {
     log.warn(s"Possibly faulty series recognized, for $threadLocal, in series no. $seriesNumber:")
     var instructionCounter = 0
     def warn(msg:String) = log warn s"#$seriesNumber/$threadLocal[$instructionCounter] $msg"
-    def warnStackTrace(st:StackTrace) {st.elements foreach {element⇒warn(s"  at $element")}}
+    def warnStackTrace(st:StackTrace) = st.elements foreach {element ⇒ warn(s"  at $element")}
     series foreach {
-      case CallToRemove(_,stackTrace) ⇒
+      case CallToRemove(_, stackTrace) ⇒
         warn("ThreadLocal.remove()")
         warnStackTrace(stackTrace)
         instructionCounter += 1
-      case CallToSet(_,value,stackTrace) ⇒
+      case CallToSet(_, value, stackTrace) ⇒
         warn(s"ThreadLocal.set($value)")
         warnStackTrace(stackTrace)
         instructionCounter += 1
-      case CurrentValueInfo(_,value) ⇒
+      case CurrentValueInfo(_, value) ⇒
         warn(s"Value is now: $value")
         instructionCounter += 1
     }

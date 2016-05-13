@@ -5,7 +5,7 @@ import de.metacoder.edwardthreadlocal.util.logging.{Log, MicroLogger}
 
 import scala.annotation.implicitNotFound
 
-@implicitNotFound(msg="Make sure the AnalysisSetup instance is in the implicit context. It contains behavior that might be made configurable. In case of doubt, use `AnalysisSetup.default`.")
+@implicitNotFound(msg = "Make sure the AnalysisSetup instance is in the implicit context. It contains behavior that might be made configurable. In case of doubt, use `AnalysisSetup.default`.")
 trait AnalysisSetup {
   def idOfValue(v:AnyRef):ValueInstanceID
   def log:MicroLogger
