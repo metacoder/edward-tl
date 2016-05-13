@@ -1,8 +1,28 @@
 <code_scheme name="Metacoder">
+  <JavaCodeStyleSettings>
+    <option name="BLANK_LINES_AROUND_INITIALIZER" value="0" />
+  </JavaCodeStyleSettings>
+  <ScalaCodeStyleSettings>
+    <option name="SPACE_INSIDE_CLOSURE_BRACES" value="false" />
+    <option name="ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS" value="2" />
+    <option name="SPACE_AFTER_TYPE_COLON" value="false" />
+    <option name="SD_ALIGN_OTHER_TAGS_COMMENTS" value="false" />
+    <option name="SD_ALIGN_PARAMETERS_COMMENTS" value="false" />
+    <option name="SD_ALIGN_EXCEPTION_COMMENTS" value="false" />
+    <option name="SD_ALIGN_RETURN_COMMENTS" value="false" />
+    <option name="SD_BLANK_LINE_BEFORE_TAGS" value="false" />
+    <option name="SD_KEEP_BLANK_LINES_BETWEEN_TAGS" value="true" />
+    <option name="ENFORCE_FUNCTIONAL_SYNTAX_FOR_UNIT" value="false" />
+    <option name="REPLACE_CASE_ARROW_WITH_UNICODE_CHAR" value="true" />
+    <option name="REPLACE_MAP_ARROW_WITH_UNICODE_CHAR" value="true" />
+    <option name="REPLACE_FOR_GENERATOR_ARROW_WITH_UNICODE_CHAR" value="true" />
+  </ScalaCodeStyleSettings>
   <XML>
     <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
   </XML>
   <codeStyleSettings language="JAVA">
+    <option name="BLANK_LINES_AROUND_METHOD" value="0" />
+    <option name="BLANK_LINES_AROUND_METHOD_IN_INTERFACE" value="0" />
     <option name="SPACE_BEFORE_IF_PARENTHESES" value="false" />
     <option name="SPACE_BEFORE_WHILE_PARENTHESES" value="false" />
     <option name="SPACE_BEFORE_FOR_PARENTHESES" value="false" />
@@ -15,5 +35,11 @@
       <option name="CONTINUATION_INDENT_SIZE" value="2" />
       <option name="TAB_SIZE" value="2" />
     </indentOptions>
+  </codeStyleSettings>
+  <codeStyleSettings language="Scala">
+    <option name="KEEP_FIRST_COLUMN_COMMENT" value="true" />
+    <option name="BLANK_LINES_AROUND_CLASS" value="0" />
+    <option name="BLANK_LINES_AROUND_METHOD" value="0" />
+    <option name="BLANK_LINES_AROUND_METHOD_IN_INTERFACE" value="0" />
   </codeStyleSettings>
 </code_scheme>

@@ -6,6 +6,7 @@ import de.metacoder.edwardthreadlocal.analysis.datamodel.CallData.{CallToRemove,
 import de.metacoder.edwardthreadlocal.analysis.datamodel.{CallData, ValueInstanceID}
 
 import scala.annotation.tailrec
+import scala.language.postfixOps
 
 object CallDataSeriesSink {
   def accept(series:Seq[CallData])(implicit setup:AnalysisSetup) {
@@ -16,12 +17,16 @@ object CallDataSeriesSink {
   }
 
   private def postProcessedSeriesPerThreadLocal(series:Seq[CallData]):Map[ThreadLocal[_], Seq[CallData]] =
-    series groupBy (_ threadLocal) mapValues postProcessedSeriesForOneThreadLocal filterNot (_._2 isEmpty)
+    series groupBy {
+      _.threadLocal
+    } mapValues postProcessedSeriesForOneThreadLocal filterNot {
+      _._2 isEmpty
+    }
   private def postProcessedSeriesForOneThreadLocal(series:Seq[CallData]):Seq[CallData] = {
     def isInterestingConsecutivePair(before:CallData, after:CallData, isLastPair:Boolean) =
       if (before.threadLocal != after.threadLocal) true
       else (before, after) match {
-        case (_:CallToRemove, CurrentValueInfo(_, nullInstanceID)) if nullInstanceID.refersToNull && !isLastPair ⇒ false
+        case (_:CallToRemove[_], CurrentValueInfo(_, nullInstanceID)) if nullInstanceID.refersToNull && !isLastPair ⇒ false
         case (CurrentValueInfo(_, same1), CurrentValueInfo(_, same2)) if same1 == same2 ⇒ false
         case (CallToSet(_, same1, _), CurrentValueInfo(_, same2)) if same1 == same2 && !isLastPair ⇒ false
         case (CallToSet(_, same1, _), CallToSet(_, same2, _)) if same1 == same2 ⇒ false
@@ -43,7 +48,7 @@ object CallDataSeriesSink {
       case Seq(CurrentValueInfo(_, cv), rst@_*) ⇒ recurse(rst, initialValue, Some(cv))
       case Seq(CallToSet(_, cv, _), rst@_*) if initialValue isEmpty ⇒ recurse(s, Some(cv), lastSeenValue)
       case Seq(CallToSet(_, cv, _), rst@_*) ⇒ recurse(rst, initialValue, Some(cv))
-      case Seq(_:CallToRemove, rst@_*) ⇒ recurse(rst, initialValue, None)
+      case Seq(_:CallToRemove[_], rst@_*) ⇒ recurse(rst, initialValue, None)
       case Seq(_, rst@_*) ⇒ recurse(rst, initialValue, lastSeenValue)
     }
     recurse(series, None, None)
