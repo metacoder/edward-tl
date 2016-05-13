@@ -65,6 +65,9 @@
                     <configuration>
                         <scalaVersion>${scala.version}</scalaVersion>
                         <scalaCompatVersion>${scala.compat.version}</scalaCompatVersion>
+                        <args>
+                            <arg>-feature</arg>
+                        </args>
                     </configuration>
                     <executions>
                         <execution>
