@@ -6,14 +6,14 @@ sealed trait CallData {
   def threadLocal:ThreadLocal[_]
 }
 object CallData {
-  def forCallToRemove(tl:ThreadLocal[_]):CallToRemove =
+  def forCallToRemove[A](tl:ThreadLocal[A]):CallToRemove[A] =
     CallToRemove(tl, StackTrace.current())
-  def forCallToSet(tl:ThreadLocal[_], newValue:AnyRef)(implicit setup:AnalysisSetup):CallToSet =
+  def forCallToSet[A](tl:ThreadLocal[A], newValue:AnyRef)(implicit setup:AnalysisSetup):CallToSet[A] =
     CallToSet(tl, setup idOfValue newValue, StackTrace.current())
-  def forCurrentValueInfo(tl:ThreadLocal[_], currentValue:AnyRef)(implicit setup:AnalysisSetup):CurrentValueInfo =
+  def forCurrentValueInfo[A](tl:ThreadLocal[A], currentValue:AnyRef)(implicit setup:AnalysisSetup):CurrentValueInfo[A] =
     CurrentValueInfo(tl, setup idOfValue currentValue)
 
-  sealed case class CallToRemove(threadLocal:ThreadLocal[_], stackTrace:StackTrace) extends CallData
-  sealed case class CallToSet(threadLocal:ThreadLocal[_], valueID:ValueInstanceID, stackTrace:StackTrace) extends CallData
-  sealed case class CurrentValueInfo(threadLocal:ThreadLocal[_], currentValueID:ValueInstanceID) extends CallData
+  sealed case class CallToRemove[A](threadLocal:ThreadLocal[A], stackTrace:StackTrace) extends CallData
+  sealed case class CallToSet[A](threadLocal:ThreadLocal[A], valueID:ValueInstanceID, stackTrace:StackTrace) extends CallData
+  sealed case class CurrentValueInfo[A](threadLocal:ThreadLocal[A], currentValueID:ValueInstanceID) extends CallData
 }

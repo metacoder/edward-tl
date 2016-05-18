@@ -2,6 +2,8 @@ package de.metacoder.edwardthreadlocal.analysis.datamodel
 
 import de.metacoder.edwardthreadlocal
 
+import scala.language.postfixOps
+
 // other than a StackTraceElement array, this can be compared with equals, and returns a meaningful toString
 case class StackTrace(elements:Seq[StackTraceElement])
 object StackTrace {
@@ -17,7 +19,7 @@ object StackTrace {
       case _ ⇒ st
     }
     def removeInitialTrivialThreadLocalCalls(st:Seq[StackTraceElement]):Seq[StackTraceElement] = st match {
-      case Seq(tlCall, rst@_*) if tlCall.getClassName == classOf[ThreadLocal[_]].getName && trivialStackLocalMethodNames(tlCall getMethodName) ⇒
+      case Seq(tlCall, rst@_*) if tlCall.getClassName == classOf[ThreadLocal[_]].getName && trivialStackLocalMethodNames(tlCall.getMethodName) ⇒
         removeInitialTrivialThreadLocalCalls(rst)
       case _ ⇒ st
     }

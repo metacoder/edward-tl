@@ -1,5 +1,7 @@
 package de.metacoder.edwardthreadlocal.analysis
 
+import scala.language.postfixOps
+
 import de.metacoder.edwardthreadlocal.analysis.datamodel.CallData
 
 object CallDataSink {
