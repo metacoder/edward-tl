@@ -15,7 +15,9 @@ public class EventBridgeHolder {
   /*
     this is the eventbridge implemented by the agent-impl
   */
-  public static EventBridge INSTANCE = null;
+
+ // TODO volatile?
+  public volatile static EventBridge INSTANCE = null;
 
   //public static EventBridge INSTANCE = (EventBridge) Proxy.newProxyInstance(null, new Class[]{EventBridge.class}, (proxy, method, args) -> method.invoke(INSTANCE, args));
 

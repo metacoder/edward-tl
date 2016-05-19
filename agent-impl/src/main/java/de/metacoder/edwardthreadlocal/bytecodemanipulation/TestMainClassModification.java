@@ -1,5 +1,6 @@
 package de.metacoder.edwardthreadlocal.bytecodemanipulation;
 
+import de.metacoder.edwardthreadlocal.Configuration;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 import de.metacoder.edwardthreadlocal.util.InstrumentationUtils;
@@ -13,8 +14,8 @@ import static de.metacoder.edwardthreadlocal.util.logging.Log.infoAround;
 public class TestMainClassModification {
   public static void apply(Instrumentation inst) {
     inst.addTransformer((loader, className, classBeingRedefined, protectionDomain, classfileBuffer) -> {
-      if("de/metacoder/edwardthreadlocal/test/Main".equals(className)) {
-        return infoAround("TestMainClassModification.modifyTestMainBytecode", () -> modifyTestMainBytecode(classfileBuffer));
+      if(Configuration.entryPointClassName().equals(className)) {
+        return infoAround(Configuration.entryPointClassName(), () -> modifyTestMainBytecode(classfileBuffer));
       } else {
         fine("<TestMainClassModification> Skipping " + className);
         return classfileBuffer;
@@ -27,14 +28,16 @@ public class TestMainClassModification {
   }
 
   private static final Function<ClassVisitor, ClassVisitor> MODIFY_AFTER_BL_METHOD =
-    cv -> new MethodConsumingClassVisitor("afterBL", "change-TestMain-beforeBL", mv -> {
+    cv -> new MethodConsumingClassVisitor(Configuration.afterMethodName(), "change-after-method", mv -> {
       mv.visitFieldInsn(Opcodes.GETSTATIC, "de/metacoder/edwardthreadlocal/EventBridgeHolder", "INSTANCE", "Lde/metacoder/edwardthreadlocal/EventBridge;");
       mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, "de/metacoder/edwardthreadlocal/EventBridge", "deactivateTracingForThread", "()V", true);
     }
       , cv);
 
+  // TODO what happens if before is being instrumented but after not? Memleak? 
+
   private static final Function<ClassVisitor, ClassVisitor> MODIFY_BEFORE_BL_METHOD =
-    cv -> new MethodConsumingClassVisitor("beforeBL", "change-TestMain-beforeBL", mv -> {
+    cv -> new MethodConsumingClassVisitor(Configuration.beforeMethodName(), "change-before-method", mv -> {
       mv.visitFieldInsn(Opcodes.GETSTATIC, "de/metacoder/edwardthreadlocal/EventBridgeHolder", "INSTANCE", "Lde/metacoder/edwardthreadlocal/EventBridge;");
       mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, "de/metacoder/edwardthreadlocal/EventBridge", "activateTracingForThread", "()V", true);
     }
