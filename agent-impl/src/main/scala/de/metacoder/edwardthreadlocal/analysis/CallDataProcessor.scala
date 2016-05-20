@@ -4,8 +4,10 @@ import scala.language.postfixOps
 
 import de.metacoder.edwardthreadlocal.analysis.datamodel.CallData
 
-object CallDataSink {
-  def accept(cd:CallData)(implicit setup:AnalysisSetup):Unit =
+import scala.language.postfixOps
+
+object CallDataProcessor {
+  def addToCurrentSeries(cd:CallData)(implicit setup:AnalysisSetup):Unit =
     currentSeriesOpt filter (_ recordingEnabled) foreach {series ⇒
       storeCurrentSeries(series + currentValueInfoFor(cd threadLocal) + cd)
     }
@@ -19,9 +21,10 @@ object CallDataSink {
     case anythingElse ⇒ ()
   }
 
-  def endRecordingSeries()(implicit setup:AnalysisSetup):Unit = currentSeriesOpt foreach {series ⇒
-    CallDataSeriesSink accept withAllCurrentValuesBehind(series recordedData)
+  def finishCurrentRecordingSeries()(implicit setup:AnalysisSetup):Seq[CallData] = {
+    val result = currentSeriesOpt map (series ⇒ withAllCurrentValuesBehind(series recordedData)) getOrElse Seq()
     removeCurrentSeries()
+    result
   }
   private def withAllCurrentValuesBehind(seriesData:Seq[CallData])(implicit setup:AnalysisSetup):Seq[CallData] =
     seriesData ++ ((seriesData map (_ threadLocal) distinct) map {tl ⇒ currentValueInfoFor(tl)})

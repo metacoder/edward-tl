@@ -1,20 +1,14 @@
 package de.metacoder.edwardthreadlocal.analysis
 
-import java.util.concurrent.atomic.AtomicLong
-
 import de.metacoder.edwardthreadlocal.analysis.datamodel.CallData.{CallToRemove, CallToSet, CurrentValueInfo}
 import de.metacoder.edwardthreadlocal.analysis.datamodel.{CallData, ValueInstanceID}
 
 import scala.annotation.tailrec
 import scala.language.postfixOps
 
-object CallDataSeriesSink {
-  def accept(series:Seq[CallData])(implicit setup:AnalysisSetup) {
-    val serNum = newSeriesNumber()
-    postProcessedSeriesPerThreadLocal(series).filter(e ⇒ looksFaulty(e._2)) foreach {case (tl, s) ⇒
-      FaultyCallDataSeriesSink.accept(s, tl, serNum)
-    }
-  }
+object FindFaultySubSeries {
+  def apply(series:Seq[CallData])(implicit setup:AnalysisSetup):Map[ThreadLocal[_], Seq[CallData]] =
+    postProcessedSeriesPerThreadLocal(series).filter(e ⇒ looksFaulty(e._2))
 
   private def postProcessedSeriesPerThreadLocal(series:Seq[CallData]):Map[ThreadLocal[_], Seq[CallData]] =
     series groupBy {
@@ -52,10 +46,5 @@ object CallDataSeriesSink {
       case Seq(_, rst@_*) ⇒ recurse(rst, initialValue, lastSeenValue)
     }
     recurse(series, None, None)
-  }
-
-  private val newSeriesNumber:() ⇒ Long = {
-    val nextNumber = new AtomicLong
-    () ⇒ nextNumber getAndIncrement()
   }
 }
